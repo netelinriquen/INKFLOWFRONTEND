@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { clienteService } from '../services/inkflowApi'
+import axios from 'axios'
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true)
@@ -11,7 +13,7 @@ const Login = () => {
   })
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     // Login de admin
@@ -26,14 +28,61 @@ const Login = () => {
       return
     }
     
-    // Login/cadastro normal
-    localStorage.setItem('user', JSON.stringify({ 
-      email: formData.email, 
-      nome: formData.nome || formData.email.split('@')[0],
-      isAdmin: false 
-    }))
-    alert(isLogin ? 'Login realizado!' : 'Cadastro realizado!')
-    navigate('/agendamento')
+    try {
+      if (isLogin) {
+        // Login real usando o backend
+        const response = await axios.post('http://localhost:8080/api/auth/login', {
+          email: formData.email,
+          password: formData.senha
+        })
+        
+        if (response.data.success) {
+          localStorage.setItem('user', JSON.stringify(response.data.user))
+          alert('Login realizado com sucesso!')
+          
+          if (response.data.user.isAdmin) {
+            navigate('/admin')
+          } else {
+            navigate('/agendamento')
+          }
+        }
+      } else {
+        // Cadastro - criar cliente no backend
+        const novoCliente = {
+          username: formData.email.split('@')[0],
+          email: formData.email,
+          password: formData.senha,
+          fullName: formData.nome
+        }
+        
+        const response = await clienteService.create(novoCliente)
+        
+        localStorage.setItem('user', JSON.stringify({ 
+          id: response.data.id,
+          email: response.data.email, 
+          nome: response.data.fullName,
+          isAdmin: false 
+        }))
+        
+        alert('Cadastro realizado com sucesso!')
+        navigate('/agendamento')
+      }
+    } catch (error) {
+      console.error('Erro:', error)
+      if (isLogin) {
+        if (error.response?.data?.message) {
+          alert(error.response.data.message)
+        } else {
+          alert('Erro ao fazer login. Verifique suas credenciais.')
+        }
+      } else {
+        if (error.response?.status === 400) {
+          alert('Email já cadastrado!')
+        } else {
+          alert('Erro ao processar solicitação. Tente novamente.')
+        }
+      }
+    }
   }
 
   const handleChange = (e) => {

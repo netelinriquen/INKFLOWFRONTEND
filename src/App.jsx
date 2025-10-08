@@ -10,6 +10,7 @@ import Contact from './pages/Contact'
 import Login from './pages/Login'
 import Booking from './pages/Booking'
 import AdminDashboard from './pages/AdminDashboard'
+import TestConnection from './components/TestConnection'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/agendamento" element={<Booking />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/test" element={<TestConnection />} />
           </Routes>
         </main>
         <Footer />

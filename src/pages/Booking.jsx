@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { agendamentoService, clienteService } from '../services/inkflowApi'
 
 const Booking = () => {
   const [selectedDate, setSelectedDate] = useState('')
@@ -12,25 +13,63 @@ const Booking = () => {
   })
 
   const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00']
-  const services = ['Tatuagem Pequena', 'Tatuagem Média', 'Tatuagem Grande', 'Retoque', 'Consulta']
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const booking = {
-      ...formData,
-      data: selectedDate,
-      horario: selectedTime,
-      id: Date.now()
+  const services = ['Tatuagem Tradicional', 'Tatuagem Fine Line', 'Tatuagem Blackwork', 'Tatuagem Aquarela', 'Retoque', 'Consulta']
+  
+  // Preencher dados do usuário logado
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (user.email) {
+      setFormData(prev => ({
+        ...prev,
+        nome: user.nome || '',
+        email: user.email || ''
+      }))
     }
+  }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     
-    const bookings = JSON.parse(localStorage.getItem('bookings') || '[]')
-    bookings.push(booking)
-    localStorage.setItem('bookings', JSON.stringify(bookings))
-    
-    alert('Agendamento realizado com sucesso!')
-    setFormData({ nome: '', email: '', telefone: '', servico: '', descricao: '' })
-    setSelectedDate('')
-    setSelectedTime('')
+    try {
+      // Primeiro, criar ou buscar cliente
+      let clienteId
+      const user = JSON.parse(localStorage.getItem('user') || '{}')
+      
+      if (user.id) {
+        clienteId = user.id
+      } else {
+        // Criar cliente se não existir
+        const novoCliente = {
+          username: formData.email.split('@')[0],
+          email: formData.email,
+          password: '123456', // Senha padrão
+          fullName: formData.nome
+        }
+        
+        const clienteResponse = await clienteService.create(novoCliente)
+        clienteId = clienteResponse.data.id
+      }
+      
+      // Criar agendamento
+      const dataHora = `${selectedDate}T${selectedTime}:00`
+      const novoAgendamento = {
+        cliente: { id: clienteId },
+        dataHora: dataHora,
+        servico: formData.servico,
+        descricao: formData.descricao
+      }
+      
+      await agendamentoService.create(novoAgendamento)
+      
+      alert('Agendamento realizado com sucesso!')
+      setFormData({ nome: '', email: '', telefone: '', servico: '', descricao: '' })
+      setSelectedDate('')
+      setSelectedTime('')
+      
+    } catch (error) {
+      console.error('Erro ao criar agendamento:', error)
+      alert('Erro ao realizar agendamento. Tente novamente.')
+    }
   }
 
   const handleChange = (e) => {

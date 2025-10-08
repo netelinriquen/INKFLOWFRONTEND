@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { agendamentoService, clienteService } from '../services/inkflowApi'
 
 const AdminDashboard = () => {
   const [bookings, setBookings] = useState([])
@@ -13,22 +14,49 @@ const AdminDashboard = () => {
       return
     }
     
-    const savedBookings = JSON.parse(localStorage.getItem('bookings') || '[]')
-    setBookings(savedBookings)
+    loadAgendamentos()
   }, [navigate])
-
-  const updateBookingStatus = (id, status) => {
-    const updatedBookings = bookings.map(booking =>
-      booking.id === id ? { ...booking, status } : booking
-    )
-    setBookings(updatedBookings)
-    localStorage.setItem('bookings', JSON.stringify(updatedBookings))
+  
+  const loadAgendamentos = async () => {
+    try {
+      const response = await agendamentoService.getAll()
+      setBookings(response.data)
+    } catch (error) {
+      console.error('Erro ao carregar agendamentos:', error)
+      // Fallback para localStorage se backend não estiver disponível
+      const savedBookings = JSON.parse(localStorage.getItem('bookings') || '[]')
+      setBookings(savedBookings)
+    }
   }
 
-  const deleteBooking = (id) => {
-    const updatedBookings = bookings.filter(booking => booking.id !== id)
-    setBookings(updatedBookings)
-    localStorage.setItem('bookings', JSON.stringify(updatedBookings))
+  const updateBookingStatus = async (id, status) => {
+    try {
+      const booking = bookings.find(b => b.id === id)
+      const updatedBooking = { ...booking, status }
+      
+      await agendamentoService.update(id, updatedBooking)
+      
+      const updatedBookings = bookings.map(b =>
+        b.id === id ? { ...b, status } : b
+      )
+      setBookings(updatedBookings)
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error)
+      alert('Erro ao atualizar status do agendamento')
+    }
+  }
+
+  const deleteBooking = async (id) => {
+    if (!confirm('Tem certeza que deseja excluir este agendamento?')) return
+    
+    try {
+      await agendamentoService.delete(id)
+      const updatedBookings = bookings.filter(booking => booking.id !== id)
+      setBookings(updatedBookings)
+    } catch (error) {
+      console.error('Erro ao excluir agendamento:', error)
+      alert('Erro ao excluir agendamento')
+    }
   }
 
   return (
@@ -66,7 +94,7 @@ const AdminDashboard = () => {
                         <p className="text-light">{booking.email}</p>
                         <p className="text-light">{booking.telefone}</p>
                         <p className="text-gray">Serviço: {booking.servico}</p>
-                        <p className="text-gray">Data: {booking.data} às {booking.horario}</p>
+                        <p className="text-gray">Data: {new Date(booking.dataHora || booking.data).toLocaleString('pt-BR')}</p>
                         {booking.descricao && (
                           <p className="text-gray">Descrição: {booking.descricao}</p>
                         )}
