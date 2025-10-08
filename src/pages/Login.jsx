@@ -31,7 +31,11 @@ const Login = () => {
     try {
       if (isLogin) {
         // Login real usando o backend
-        const response = await axios.post('http://localhost:8080/api/auth/login', {
+        const API_URL = process.env.NODE_ENV === 'production' 
+          ? 'https://SEU-APP.onrender.com/api'
+          : 'http://localhost:8080/api';
+        
+        const response = await axios.post(`${API_URL}/auth/login`, {
           email: formData.email,
           password: formData.senha
         })
