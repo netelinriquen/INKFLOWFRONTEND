@@ -61,13 +61,13 @@ const Portfolio = () => {
   ]
 
   const categories = [
-    { key: 'todos', label: 'Todos', icon: '🎨' },
-    { key: 'blackwork', label: 'Blackwork', icon: '⚫' },
-    { key: 'aquarela', label: 'Aquarela', icon: '🌈' },
-    { key: 'realismo', label: 'Realismo', icon: '📸' },
-    { key: 'geometrico', label: 'Geométrico', icon: '🔷' },
-    { key: 'fineline', label: 'Fine Line', icon: '✏️' },
-    { key: 'tradicional', label: 'Tradicional', icon: '⚓' }
+    { key: 'todos', label: 'Todos' },
+    { key: 'blackwork', label: 'Blackwork' },
+    { key: 'aquarela', label: 'Aquarela' },
+    { key: 'realismo', label: 'Realismo' },
+    { key: 'geometrico', label: 'Geométrico' },
+    { key: 'fineline', label: 'Fine Line' },
+    { key: 'tradicional', label: 'Tradicional' }
   ]
 
   const filteredItems = activeFilter === 'todos' 
@@ -99,9 +99,7 @@ const Portfolio = () => {
           }}>
             <h2 style={{
               fontSize: '3.5rem',
-              background: 'linear-gradient(135deg, var(--accent-red), #ff6b9d, #c44569)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: 'var(--accent-red)',
               marginBottom: '1rem',
               fontFamily: 'Orbitron, sans-serif',
               fontWeight: '700'
@@ -165,7 +163,6 @@ const Portfolio = () => {
                   }
                 }}
               >
-                <span style={{ marginRight: '0.5rem' }}>{category.icon}</span>
                 {category.label}
               </button>
             ))}
