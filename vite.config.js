@@ -8,11 +8,12 @@ export default defineConfig({
     devSourcemap: true,
   },
   build: {
-    outDir: 'dist',
-    sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: undefined,
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+        },
       },
     },
   },
