@@ -49,22 +49,51 @@ const Chatbot = () => {
 
   return (
     <div className="chatbot-container">
-      <div className="chatbot-button" onClick={() => setIsOpen(!isOpen)}>
+      <div 
+        className="chatbot-button glow-red pulse magnetic" 
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          background: 'var(--gradient-red)',
+          border: 'none',
+          fontSize: '1.5rem'
+        }}
+      >
         💬
       </div>
 
       {isOpen && (
-        <div className="chatbot-window" style={{ display: 'flex' }}>
-          <div className="chatbot-header">
-            <h3>Ink Flow - Atendimento</h3>
-            <button className="chatbot-close" onClick={() => setIsOpen(false)}>
+        <div className="chatbot-window glass-card neon-border scale-in" style={{ 
+          display: 'flex',
+          background: 'var(--gradient-card)',
+          backdropFilter: 'blur(20px)'
+        }}>
+          <div className="chatbot-header" style={{
+            background: 'var(--gradient-red)'
+          }}>
+            <h3>🎨 Ink Flow - Atendimento</h3>
+            <button 
+              className="chatbot-close magnetic" 
+              onClick={() => setIsOpen(false)}
+              style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                borderRadius: '50%',
+                width: '35px',
+                height: '35px'
+              }}
+            >
               ×
             </button>
           </div>
 
           <div className="chatbot-messages">
             {messages.map((message, index) => (
-              <div key={index} className={`message ${message.type}-message`}>
+              <div 
+                key={index} 
+                className={`message ${message.type}-message fade-in-up`}
+                style={{
+                  animationDelay: `${index * 0.1}s`
+                }}
+              >
                 {message.text}
               </div>
             ))}
@@ -73,8 +102,13 @@ const Chatbot = () => {
               {quickReplies.map((reply, index) => (
                 <button
                   key={index}
-                  className="quick-btn"
+                  className="quick-btn magnetic ripple"
                   onClick={() => handleQuickReply(reply)}
+                  style={{
+                    background: 'var(--gradient-red)',
+                    border: 'none',
+                    borderRadius: 'var(--border-radius-md)'
+                  }}
                 >
                   {reply}
                 </button>
@@ -89,8 +123,23 @@ const Chatbot = () => {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Digite sua mensagem..."
+              style={{
+                background: 'var(--gradient-card)',
+                border: '1px solid rgba(255, 0, 64, 0.3)',
+                borderRadius: 'var(--border-radius-lg)'
+              }}
             />
-            <button onClick={handleSend}>Enviar</button>
+            <button 
+              onClick={handleSend}
+              className="magnetic ripple"
+              style={{
+                background: 'var(--gradient-red)',
+                border: 'none',
+                borderRadius: 'var(--border-radius-lg)'
+              }}
+            >
+              🚀
+            </button>
           </div>
         </div>
       )}

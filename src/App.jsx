@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Chatbot from './components/Chatbot'
+import ParticleBackground from './components/ParticleBackground'
 import Home from './pages/Home'
 import About from './pages/About'
 import Portfolio from './pages/Portfolio'
@@ -16,6 +17,7 @@ function App() {
   return (
     <Router>
       <div className="App">
+        <ParticleBackground />
         <Header />
         <main>
           <Routes>

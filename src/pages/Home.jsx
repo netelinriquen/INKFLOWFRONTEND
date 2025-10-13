@@ -13,112 +13,129 @@ const Home = () => {
 
   return (
     <div className="home">
-      <section className="hero" style={{
-        backgroundImage: "url('/assets/images/lalala.png')",
+      <section className="hero hero-modern liquid-bg" style={{
+        backgroundImage: "linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.8)), url('/assets/images/lalala.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}>
         <div className="hero-content">
-          <h1 style={{ color: '#D00000' }}>INK FLOW</h1>
-          <p>Transformando pele em arte desde 2025</p>
-          <div style={{ marginTop: '2rem' }}>
-            <Link to="/portfolio" className="btn">Ver Portfólio</Link>
-            <Link to="/agendamento" className="btn btn-outline" style={{ marginLeft: '1rem' }}>Agendar Sessão</Link>
+          <h1 className="hero-title-modern gradient-text-animated glow-red">INK FLOW</h1>
+          <p className="hero-subtitle-modern fade-in-up">Transformando pele em arte desde 2025</p>
+          <div className="fade-in-up" style={{ 
+            marginTop: '3rem', 
+            display: 'flex', 
+            gap: '1rem', 
+            flexWrap: 'wrap', 
+            justifyContent: 'center',
+            animationDelay: '0.3s'
+          }}>
+            <Link to="/portfolio" className="btn-modern magnetic ripple">✨ Ver Portfólio</Link>
+            <Link to="/agendamento" className="btn-modern btn-outline-modern magnetic ripple">📅 Agendar Sessão</Link>
           </div>
         </div>
       </section>
 
-      <section className="section">
-        <h2>Arte na Pele</h2>
-        <p style={{
-          textAlign: 'center',
-          color: 'var(--text-gray)',
-          marginBottom: '3rem',
-          maxWidth: '600px',
-          marginLeft: 'auto',
-          marginRight: 'auto'
-        }}>
-          Conheça alguns dos nossos trabalhos mais representativos em diferentes técnicas e estilos artísticos
-        </p>
-        <div className="portfolio-section" style={{
-          background: 'linear-gradient(145deg, var(--secondary-dark), #1a1a1a)',
-          border: '1px solid rgba(208,0,0,0.2)',
-          borderRadius: '20px',
+      <section className="section-modern">
+        <div className="section-title-modern">
+          <h2>Arte na Pele</h2>
+          <p style={{
+            color: 'var(--text-secondary)',
+            fontSize: '1.1rem',
+            maxWidth: '600px',
+            margin: '0 auto'
+          }}>
+            Conheça alguns dos nossos trabalhos mais representativos em diferentes técnicas e estilos artísticos
+          </p>
+        </div>
+        <div className="glass-card neon-border floating" style={{
           padding: '3rem',
           textAlign: 'center',
-          marginBottom: '2rem',
-          position: 'relative',
-          overflow: 'hidden'
+          marginBottom: '2rem'
         }}>
-          <div className="section-ornament" style={{
-            position: 'absolute',
-            top: '20px',
-            left: '20px',
-            width: '60px',
-            height: '3px',
-            background: 'linear-gradient(90deg, var(--accent-red), transparent)'
-          }}></div>
-          <div className="section-ornament" style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            width: '60px',
-            height: '3px',
-            background: 'linear-gradient(270deg, var(--accent-red), transparent)'
-          }}></div>
-          <h3 style={{
-            color: 'var(--accent-red)',
-            marginBottom: '1rem',
-            fontSize: '1.8rem',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
-          }}>Destaques do Portfólio</h3>
-          <Carousel images={portfolioImages} />
-          <p style={{ color: 'var(--text-gray)', marginTop: '1rem' }}>
-            Veja mais no nosso <span style={{ color: 'var(--accent-red)', fontWeight: 'bold' }}>portfólio</span> completo
+          <h3 className="gradient-text-animated" style={{
+            marginBottom: '2rem',
+            fontSize: '1.8rem'
+          }}>🎨 Destaques do Portfólio</h3>
+          <div className="carousel-modern scale-in">
+            <Carousel images={portfolioImages} />
+          </div>
+          <p className="fade-in-up" style={{ 
+            color: 'var(--text-secondary)', 
+            marginTop: '2rem', 
+            fontSize: '1.1rem',
+            animationDelay: '0.5s'
+          }}>
+            Veja mais no nosso <span className="gradient-text-animated" style={{ fontWeight: 'bold' }}>portfólio</span> completo
           </p>
         </div>
       </section>
 
-      <section className="section">
-        <h2>Diferenciais Competitivos</h2>
-        <div className="grid-responsive">
-          <div className="card-equal">
-            <div className="icon-circle">10+</div>
-            <h3 className="text-primary mb-1">Experiência Comprovada</h3>
-            <p className="text-gray">
+      <section className="section-modern">
+        <div className="section-title-modern">
+          <h2>Diferenciais Competitivos</h2>
+        </div>
+        <div className="grid-modern">
+          <div className="service-card-modern fade-in-up holographic magnetic">
+            <div className="service-icon-modern floating">⭐</div>
+            <h3 style={{
+              background: 'var(--gradient-red)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '1rem'
+            }}>Experiência Comprovada</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>
               Mais de uma década de atuação no mercado com equipe especializada em técnicas avançadas de tatuagem artística e realismo fotográfico.
             </p>
           </div>
-          <div className="card-equal">
-            <div className="icon-circle">100%</div>
-            <h3 className="text-primary mb-1">Protocolos de Segurança</h3>
-            <p className="text-gray">
+          <div className="service-card-modern fade-in-up holographic magnetic">
+            <div className="service-icon-modern floating">🛡️</div>
+            <h3 style={{
+              background: 'var(--gradient-red)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '1rem'
+            }}>Protocolos de Segurança</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>
               Rigoroso cumprimento de normas sanitárias da ANVISA, materiais descartáveis certificados e ambiente completamente esterilizado.
             </p>
           </div>
-          <div className="card-equal">
-            <div className="icon-circle">TOP</div>
-            <h3 className="text-primary mb-1">Tecnologia de Ponta</h3>
-            <p className="text-gray">
+          <div className="service-card-modern fade-in-up holographic magnetic">
+            <div className="service-icon-modern floating">🚀</div>
+            <h3 style={{
+              background: 'var(--gradient-red)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '1rem'
+            }}>Tecnologia de Ponta</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>
               Equipamentos de última geração importados, tintas premium de marcas reconhecidas mundialmente e técnicas inovadoras do mercado.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="section-centered">
-        <h2 className="text-center">Solicite seu Orçamento</h2>
-        <p className="text-center text-gray mb-2" style={{
-          fontSize: '1.1rem',
-          maxWidth: '600px',
-          margin: '0 auto'
-        }}>
-          Agende uma consulta técnica gratuita com nossa equipe especializada e desenvolva seu projeto personalizado
-        </p>
-        <div className="btn-group mt-2">
-          <Link to="/agendamento" className="btn btn-large">Agendar Consulta</Link>
-          <Link to="/portfolio" className="btn btn-outline btn-large">Ver Portfólio Completo</Link>
+      <section className="section-modern" style={{ textAlign: 'center' }}>
+        <div className="glass-card neon-border pulse" style={{ padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto' }}>
+          <h2 className="gradient-text-animated" style={{ marginBottom: '2rem' }}>💎 Solicite seu Orçamento</h2>
+          <p className="fade-in-up" style={{
+            fontSize: '1.2rem',
+            color: 'var(--text-secondary)',
+            marginBottom: '3rem',
+            lineHeight: '1.8'
+          }}>
+            Agende uma consulta técnica gratuita com nossa equipe especializada e desenvolva seu projeto personalizado
+          </p>
+          <div className="fade-in-up" style={{ 
+            display: 'flex', 
+            gap: '1rem', 
+            justifyContent: 'center', 
+            flexWrap: 'wrap',
+            animationDelay: '0.3s'
+          }}>
+            <Link to="/agendamento" className="btn-modern magnetic ripple glow-red">📅 Agendar Consulta</Link>
+            <Link to="/portfolio" className="btn-modern btn-outline-modern magnetic ripple">🎨 Ver Portfólio Completo</Link>
+          </div>
         </div>
       </section>
     </div>
