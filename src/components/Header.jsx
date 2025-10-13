@@ -29,12 +29,7 @@ const Header = () => {
   }
 
   return (
-    <header style={{
-      backgroundImage: "url('/assets/images/lalala.png')",
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat'
-    }}>
+    <header>
       <nav>
         <Link to="/" className="logo">INK FLOW</Link>
         <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
