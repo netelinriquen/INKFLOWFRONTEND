@@ -30,25 +30,23 @@ const Login = () => {
     
     try {
       if (isLogin) {
-        // Login real usando o backend
-        const API_URL = process.env.NODE_ENV === 'production' 
-          ? 'https://SEU-APP.onrender.com/api'
-          : 'http://localhost:8080/api';
+        // Buscar cliente por email para fazer login
+        const response = await clienteService.getAll()
+        const cliente = response.data.find(c => 
+          c.email === formData.email && c.password === formData.senha
+        )
         
-        const response = await axios.post(`${API_URL}/auth/login`, {
-          email: formData.email,
-          password: formData.senha
-        })
-        
-        if (response.data.success) {
-          localStorage.setItem('user', JSON.stringify(response.data.user))
+        if (cliente) {
+          localStorage.setItem('user', JSON.stringify({
+            id: cliente.id,
+            email: cliente.email,
+            nome: cliente.fullName || cliente.username,
+            isAdmin: false
+          }))
           alert('Login realizado com sucesso!')
-          
-          if (response.data.user.isAdmin) {
-            navigate('/admin')
-          } else {
-            navigate('/agendamento')
-          }
+          navigate('/agendamento')
+        } else {
+          alert('Email ou senha incorretos!')
         }
       } else {
         // Cadastro - criar cliente no backend
@@ -68,11 +66,7 @@ const Login = () => {
     } catch (error) {
       console.error('Erro:', error)
       if (isLogin) {
-        if (error.response?.data?.message) {
-          alert(error.response.data.message)
-        } else {
-          alert('Erro ao fazer login. Verifique suas credenciais.')
-        }
+        alert('Erro ao fazer login. Verifique suas credenciais.')
       } else {
         if (error.response?.status === 400) {
           alert('Email já cadastrado!')
