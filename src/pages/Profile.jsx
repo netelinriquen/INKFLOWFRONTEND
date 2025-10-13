@@ -10,14 +10,18 @@ const Profile = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}')
 
   const handleDeleteAccount = async () => {
-    if (!user.id) {
-      alert('Erro: usuário não encontrado')
-      return
-    }
-
     setLoading(true)
     try {
-      await clienteService.delete(user.id)
+      // Buscar o cliente pelo email para obter o ID
+      const response = await clienteService.getAll()
+      const cliente = response.data.find(c => c.email === user.email)
+      
+      if (!cliente) {
+        alert('Usuário não encontrado')
+        return
+      }
+
+      await clienteService.delete(cliente.id)
       localStorage.removeItem('user')
       alert('Conta deletada com sucesso!')
       navigate('/')
