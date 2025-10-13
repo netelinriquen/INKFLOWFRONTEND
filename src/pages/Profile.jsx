@@ -12,22 +12,30 @@ const Profile = () => {
   const handleDeleteAccount = async () => {
     setLoading(true)
     try {
-      // Buscar o cliente pelo email para obter o ID
-      const response = await clienteService.getAll()
-      const cliente = response.data.find(c => c.email === user.email)
+      let clienteId = user.id
       
-      if (!cliente) {
-        alert('Usuário não encontrado')
-        return
+      // Se não tem ID, busca pelo email
+      if (!clienteId) {
+        const response = await clienteService.getAll()
+        const cliente = response.data.find(c => c.email === user.email)
+        if (!cliente) {
+          alert('Usuário não encontrado')
+          setLoading(false)
+          return
+        }
+        clienteId = cliente.id
       }
 
-      await clienteService.delete(cliente.id)
-      localStorage.removeItem('user')
+      await clienteService.delete(clienteId)
+      localStorage.clear()
       alert('Conta deletada com sucesso!')
-      navigate('/')
+      window.location.href = '/'
     } catch (error) {
-      console.error('Erro ao deletar conta:', error)
-      alert('Erro ao deletar conta. Tente novamente.')
+      console.error('Erro completo:', error)
+      console.error('Response:', error.response)
+      console.error('Status:', error.response?.status)
+      console.error('Data:', error.response?.data)
+      alert(`Erro: ${error.response?.status} - ${error.response?.data?.message || error.message || 'Falha ao deletar'}`)
     } finally {
       setLoading(false)
       setShowDeleteConfirm(false)

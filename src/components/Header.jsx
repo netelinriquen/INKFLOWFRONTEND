@@ -52,7 +52,7 @@ const Header = () => {
               {user.isAdmin && (
                 <Link to="/admin" className="login-btn">⚙️</Link>
               )}
-              <button onClick={handleLogout} className="login-btn">Sair</button>
+              <button onClick={handleLogout} className="login-btn" style={{ color: 'var(--accent-red)' }}>Sair</button>
             </div>
           ) : (
             <Link to="/login" className="login-btn">Login</Link>
