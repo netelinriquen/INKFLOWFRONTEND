@@ -53,11 +53,23 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
+  const deleteAccount = async () => {
+    try {
+      const response = await authAPI.deleteAccount()
+      localStorage.removeItem('token')
+      setUser(null)
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: error.response?.data?.message || 'Erro ao deletar conta' }
+    }
+  }
+
   const value = {
     user,
     login,
     register,
     logout,
+    deleteAccount,
     loading,
     isAuthenticated: !!user,
   }

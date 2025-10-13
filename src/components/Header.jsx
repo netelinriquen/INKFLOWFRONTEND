@@ -48,7 +48,7 @@ const Header = () => {
         <div className="nav-actions">
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ color: 'var(--text-light)', fontSize: '1.5rem' }}>👤</span>
+              <Link to="/perfil" style={{ color: 'var(--text-light)', fontSize: '1.5rem', textDecoration: 'none' }}>👤</Link>
               {user.isAdmin && (
                 <Link to="/admin" className="login-btn">⚙️</Link>
               )}
