@@ -59,17 +59,11 @@ const Login = () => {
           fullName: formData.nome
         }
         
-        const response = await clienteService.create(novoCliente)
+        await clienteService.create(novoCliente)
         
-        localStorage.setItem('user', JSON.stringify({ 
-          id: response.data.id,
-          email: response.data.email, 
-          nome: response.data.fullName,
-          isAdmin: false 
-        }))
-        
-        alert('Cadastro realizado com sucesso!')
-        navigate('/agendamento')
+        alert('Cadastro realizado com sucesso! Faça login para continuar.')
+        setIsLogin(true)
+        setFormData({ email: '', senha: '', nome: '', telefone: '' })
       }
     } catch (error) {
       console.error('Erro:', error)
