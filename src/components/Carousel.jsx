@@ -20,11 +20,10 @@ const Carousel = ({ images, autoPlay = true, interval = 4000 }) => {
   return (
     <div className="carousel-container" style={{
       position: 'relative',
-      maxWidth: '700px',
+      maxWidth: '600px',
       margin: '0 auto',
       overflow: 'hidden',
-      borderRadius: 'var(--border-radius-lg)',
-      boxShadow: 'var(--shadow-strong)'
+      borderRadius: '8px'
     }}>
       <div className="carousel-track" style={{
         display: 'flex',
@@ -32,61 +31,51 @@ const Carousel = ({ images, autoPlay = true, interval = 4000 }) => {
         transform: `translateX(-${currentSlide * 100}%)`
       }}>
         {images.map((image, index) => (
-          <div key={index} className="image-hover-effect" style={{ width: '100%', flexShrink: 0 }}>
-            <img
-              src={image.src}
-              alt={image.alt}
-              style={{
-                width: '100%',
-                height: '400px',
-                objectFit: 'cover',
-                display: 'block'
-              }}
-            />
-          </div>
-        ))}
-      </div>
-      <button 
-        className="carousel-btn-modern" 
-        onClick={prevSlide}
-        style={{
-          left: '15px'
-        }}
-      >‹</button>
-      <button 
-        className="carousel-btn-modern" 
-        onClick={nextSlide}
-        style={{
-          right: '15px'
-        }}
-      >›</button>
-      
-      {/* Indicadores */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        gap: '8px'
-      }}>
-        {images.map((_, index) => (
-          <button
+          <img
             key={index}
-            onClick={() => setCurrentSlide(index)}
+            src={image.src}
+            alt={image.alt}
             style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              border: 'none',
-              background: index === currentSlide ? 'var(--accent-red)' : 'rgba(255, 255, 255, 0.5)',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+              width: '100%',
+              flexShrink: 0,
+              height: '300px',
+              objectFit: 'cover'
             }}
           />
         ))}
       </div>
+      <button 
+        className="carousel-btn prev" 
+        onClick={prevSlide}
+        style={{
+          position: 'absolute',
+          left: '10px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          background: 'rgba(208,0,0,0.8)',
+          color: 'white',
+          border: 'none',
+          padding: '10px',
+          borderRadius: '50%',
+          cursor: 'pointer'
+        }}
+      >‹</button>
+      <button 
+        className="carousel-btn next" 
+        onClick={nextSlide}
+        style={{
+          position: 'absolute',
+          right: '10px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          background: 'rgba(208,0,0,0.8)',
+          color: 'white',
+          border: 'none',
+          padding: '10px',
+          borderRadius: '50%',
+          cursor: 'pointer'
+        }}
+      >›</button>
     </div>
   )
 }
