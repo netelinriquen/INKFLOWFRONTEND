@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import './Header.css'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -47,7 +48,7 @@ const Header = () => {
               {user.isAdmin && (
                 <Link to="/admin" className="login-btn">⚙️</Link>
               )}
-              <button onClick={handleLogout} className="login-btn" style={{ color: 'var(--accent-red)' }}>Sair</button>
+              <button onClick={handleLogout} className="login-btn" style={{ color: 'var(--accent-red)', backgroundColor: 'transparent' }}>Sair</button>
             </div>
           ) : (
             <Link to="/login" className="login-btn">Login</Link>
