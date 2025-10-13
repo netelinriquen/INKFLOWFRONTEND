@@ -1,12 +1,16 @@
 header {
-    background: var(--gradient-card);
+    background: linear-gradient(135deg, rgba(13, 13, 13, 0.4) 0%, rgba(26, 26, 26, 0.3) 50%, rgba(38, 38, 38, 0.2) 100%), url('/assets/images/lalala.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     padding: 1rem 0;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    border-bottom: 1px solid var(--accent-red-dark);
+    border-bottom: 1px solid rgba(208,0,0,0.3);
+    transition: all 0.3s ease;
 }
 
 nav {
@@ -77,13 +81,17 @@ nav {
 }
 
 @media (max-width: 768px) {
+    header {
+        background-attachment: scroll;
+    }
+    
     .nav-links {
         display: none;
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
-        background: var(--gradient-card);
+        background: linear-gradient(135deg, rgba(13, 13, 13, 0.95) 0%, rgba(26, 26, 26, 0.9) 100%);
         flex-direction: column;
         padding: 1rem;
         border-top: 1px solid var(--accent-red-dark);
