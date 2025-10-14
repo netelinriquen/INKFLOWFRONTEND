@@ -23,7 +23,7 @@ const Contact = () => {
 
   return (
     <div className="contact">
-      <section className="section">
+      <section className="section" style={{ paddingTop: '8rem' }}>
         <h2>Contato</h2>
         
         <div className="form-container">

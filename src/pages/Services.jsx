@@ -40,7 +40,7 @@ const Services = () => {
 
   return (
     <div className="services">
-      <section className="section">
+      <section className="section" style={{ paddingTop: '8rem' }}>
         <h2>Nossos Serviços</h2>
         <p style={{ textAlign: 'center', color: 'var(--text-gray)', marginBottom: '3rem' }}>
           Oferecemos diversos estilos de tatuagem com a mais alta qualidade e segurança
