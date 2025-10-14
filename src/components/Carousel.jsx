@@ -19,63 +19,46 @@ const Carousel = ({ images, autoPlay = true, interval = 4000 }) => {
 
   return (
     <div className="carousel-container" style={{
-      position: 'relative',
-      maxWidth: '600px',
-      margin: '0 auto',
-      overflow: 'hidden',
-      borderRadius: '8px'
+      display: 'flex',
+      gap: '2rem',
+      alignItems: 'center',
+      maxWidth: '800px',
+      margin: '0 auto'
     }}>
-      <div className="carousel-track" style={{
-        display: 'flex',
-        transition: 'transform 0.5s ease',
-        transform: `translateX(-${currentSlide * 100}%)`
+      <div className="carousel-description" style={{
+        flex: '1',
+        padding: '1rem'
       }}>
-        {images.map((image, index) => (
-          <img
-            key={index}
-            src={image.src}
-            alt={image.alt}
-            style={{
-              width: '100%',
-              flexShrink: 0,
-              height: '300px',
-              objectFit: 'cover'
-            }}
-          />
-        ))}
+        <h4 style={{
+          color: 'var(--accent-red)',
+          marginBottom: '0.5rem',
+          fontSize: '1.2rem'
+        }}>
+          {images[currentSlide]?.title || images[currentSlide]?.alt}
+        </h4>
+        <p style={{
+          color: 'var(--text-gray)',
+          lineHeight: '1.5'
+        }}>
+          {images[currentSlide]?.description || 'Trabalho artístico único com técnicas avançadas de tatuagem.'}
+        </p>
       </div>
-      <button 
-        className="carousel-btn prev" 
-        onClick={prevSlide}
-        style={{
-          position: 'absolute',
-          left: '10px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          background: 'rgba(208,0,0,0.8)',
-          color: 'white',
-          border: 'none',
-          padding: '10px',
-          borderRadius: '50%',
-          cursor: 'pointer'
-        }}
-      >‹</button>
-      <button 
-        className="carousel-btn next" 
-        onClick={nextSlide}
-        style={{
-          position: 'absolute',
-          right: '10px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          background: 'rgba(208,0,0,0.8)',
-          color: 'white',
-          border: 'none',
-          padding: '10px',
-          borderRadius: '50%',
-          cursor: 'pointer'
-        }}
-      >›</button>
+      <div className="carousel-image" style={{
+        flex: '1',
+        borderRadius: '8px',
+        overflow: 'hidden'
+      }}>
+        <img
+          src={images[currentSlide]?.src}
+          alt={images[currentSlide]?.alt}
+          style={{
+            width: '100%',
+            height: '300px',
+            objectFit: 'cover',
+            transition: 'opacity 0.5s ease'
+          }}
+        />
+      </div>
     </div>
   )
 }

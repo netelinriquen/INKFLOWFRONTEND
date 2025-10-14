@@ -51,7 +51,7 @@ const Header = () => {
               <button onClick={handleLogout} className="login-btn">Sair</button>
             </div>
           ) : (
-            <Link to="/login" className="login-btn">Login</Link>
+            <Link to="/login" className="login-btn login-button-special">Login</Link>
           )}
           <button className="mobile-menu-toggle" onClick={toggleMenu}>
             ☰

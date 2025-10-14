@@ -21,6 +21,7 @@ nav {
     margin: 0 auto;
     padding: 0 2rem;
     position: relative;
+    height: 60px;
 }
 
 .logo {
@@ -52,22 +53,55 @@ nav {
     display: flex;
     align-items: center;
     gap: 1rem;
+    height: 100%;
 }
 
-.login-btn {
-    color: var(--text-light);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--accent-red);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    font-weight: 500;
+.nav-links .login-btn {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 0.3rem 0.8rem !important;
+    border: none !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    background: var(--accent-red) !important;
+    box-shadow: 0 2px 8px rgba(255, 0, 64, 0.3) !important;
+    display: inline-flex !important;
+    align-items: center !important;
 }
 
-.login-btn:hover {
-    background: var(--accent-red);
-    color: white;
-    transform: translateY(-1px);
+.nav-links .login-btn:hover {
+    background: var(--accent-red-light) !important;
+    box-shadow: 0 4px 12px rgba(255, 0, 64, 0.4) !important;
+    transform: translateY(-1px) !important;
+    color: white !important;
+}
+
+.nav-actions .login-btn {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 0.3rem 0.8rem !important;
+    border: none !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    background: var(--accent-red) !important;
+    box-shadow: 0 2px 8px rgba(255, 0, 64, 0.3) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.nav-actions .login-btn:hover {
+    background: var(--accent-red-light) !important;
+    box-shadow: 0 4px 12px rgba(255, 0, 64, 0.4) !important;
+    transform: translateY(-1px) !important;
+    color: white !important;
+}
+
+.login-button-special {
+    border-radius: 4px !important;
 }
 
 .mobile-menu-toggle {
