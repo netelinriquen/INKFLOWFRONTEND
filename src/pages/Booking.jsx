@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
+import Calendar from '../components/Calendar'
 import { agendamentoService, clienteService } from '../services/inkflowApi'
 
 const Booking = () => {
-  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedDate, setSelectedDate] = useState(null)
   const [selectedTime, setSelectedTime] = useState('')
   const [formData, setFormData] = useState({
     nome: '',
@@ -13,7 +14,31 @@ const Booking = () => {
   })
 
   const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00']
-  const services = ['Tatuagem Tradicional', 'Tatuagem Fine Line', 'Tatuagem Blackwork', 'Tatuagem Aquarela', 'Retoque', 'Consulta']
+  const services = ['Tatuagem Pequena', 'Tatuagem Média', 'Tatuagem Grande', 'Retoque', 'Consulta']
+  
+  // Simulando disponibilidade de horários
+  const getAvailableSlots = () => {
+    const slots = {}
+    const today = new Date()
+    
+    // Próximos 30 dias
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today)
+      date.setDate(today.getDate() + i)
+      const dateStr = date.toISOString().split('T')[0]
+      
+      // Simular alguns dias com horários disponíveis
+      if (date.getDay() !== 0) { // Não domingo
+        const availableHours = timeSlots.filter(() => Math.random() > 0.3)
+        if (availableHours.length > 0) {
+          slots[dateStr] = availableHours
+        }
+      }
+    }
+    return slots
+  }
+  
+  const availableSlots = getAvailableSlots()
   
   // Preencher dados do usuário logado
   useEffect(() => {
@@ -63,7 +88,7 @@ const Booking = () => {
       
       alert('Agendamento realizado com sucesso!')
       setFormData({ nome: '', email: '', telefone: '', servico: '', descricao: '' })
-      setSelectedDate('')
+      setSelectedDate(null)
       setSelectedTime('')
       
     } catch (error) {
@@ -81,7 +106,7 @@ const Booking = () => {
 
   return (
     <div className="booking">
-      <section className="section">
+      <section className="section" style={{ paddingTop: '8rem' }}>
         <h2>Agendamento</h2>
         
         <div className="agendamento-grid">
@@ -138,13 +163,10 @@ const Booking = () => {
               </div>
               
               <div className="form-group">
-                <label>Data *</label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  required
+                <Calendar 
+                  selectedDate={selectedDate}
+                  onDateSelect={setSelectedDate}
+                  availableSlots={availableSlots}
                 />
               </div>
               

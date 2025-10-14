@@ -44,11 +44,11 @@ const Header = () => {
         <div className="nav-actions">
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Link to="/perfil" style={{ color: 'var(--text-light)', fontSize: '1.5rem', textDecoration: 'none' }}>👤</Link>
+              <span style={{ color: 'var(--text-light)' }}>Olá, {user.nome || user.email}</span>
               {user.isAdmin && (
                 <Link to="/admin" className="login-btn">⚙️</Link>
               )}
-              <button onClick={handleLogout} className="login-btn" style={{ color: 'var(--accent-red)', backgroundColor: 'transparent' }}>Sair</button>
+              <button onClick={handleLogout} className="login-btn">Sair</button>
             </div>
           ) : (
             <Link to="/login" className="login-btn">Login</Link>
