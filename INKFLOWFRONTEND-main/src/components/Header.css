@@ -1,0 +1,155 @@
+header {
+    background: linear-gradient(135deg, rgba(13, 13, 13, 0.4) 0%, rgba(26, 26, 26, 0.3) 50%, rgba(38, 38, 38, 0.2) 100%), url('/assets/images/lalala.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding: 1rem 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border-bottom: 1px solid rgba(208,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    height: 60px;
+}
+
+.logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--accent-red);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent-red);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+}
+
+.nav-links .login-btn {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 0.3rem 0.8rem !important;
+    border: none !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    background: var(--accent-red) !important;
+    box-shadow: 0 2px 8px rgba(255, 0, 64, 0.3) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.nav-links .login-btn:hover {
+    background: var(--accent-red-light) !important;
+    box-shadow: 0 4px 12px rgba(255, 0, 64, 0.4) !important;
+    transform: translateY(-1px) !important;
+    color: white !important;
+}
+
+.nav-actions .login-btn {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 0.3rem 0.8rem !important;
+    border: none !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    background: var(--accent-red) !important;
+    box-shadow: 0 2px 8px rgba(255, 0, 64, 0.3) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.nav-actions .login-btn:hover {
+    background: var(--accent-red-light) !important;
+    box-shadow: 0 4px 12px rgba(255, 0, 64, 0.4) !important;
+    transform: translateY(-1px) !important;
+    color: white !important;
+}
+
+.login-button-special {
+    border-radius: 4px !important;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    header {
+        background-attachment: scroll;
+    }
+    
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, rgba(13, 13, 13, 0.95) 0%, rgba(26, 26, 26, 0.9) 100%);
+        flex-direction: column;
+        padding: 1rem;
+        border-top: 1px solid var(--accent-red-dark);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    nav {
+        padding: 0 1rem;
+    }
+    
+    .nav-actions {
+        gap: 0.5rem;
+    }
+    
+    .login-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
