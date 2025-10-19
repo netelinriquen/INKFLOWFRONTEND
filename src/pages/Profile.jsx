@@ -38,8 +38,12 @@ const Profile = () => {
         clienteId = cliente.id
       }
 
-      // Usa o método update da API
-      await clienteService.update(clienteId, formData)
+      // Usa o método update da API (sem email para evitar conflito)
+      const updateData = {
+        fullName: formData.fullName,
+        telefone: formData.telefone
+      }
+      await clienteService.update(clienteId, updateData)
       
       // Atualiza localStorage com novos dados
       const updatedUser = {
@@ -152,17 +156,18 @@ const Profile = () => {
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  required
+                  disabled
                   style={{
                     width: '100%',
                     padding: '0.75rem',
                     border: '1px solid var(--text-secondary)',
                     borderRadius: '4px',
-                    backgroundColor: 'var(--bg-color)',
-                    color: 'var(--text-color)'
+                    backgroundColor: '#f5f5f5',
+                    color: '#666',
+                    cursor: 'not-allowed'
                   }}
                 />
+                <small style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>Email não pode ser alterado</small>
               </div>
               
               <div style={{ marginBottom: '1rem' }}>
