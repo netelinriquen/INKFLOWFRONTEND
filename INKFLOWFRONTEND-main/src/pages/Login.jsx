@@ -58,31 +58,61 @@ const Login = () => {
           username: formData.email.split('@')[0],
           email: formData.email,
           password: formData.senha,
-          fullName: formData.nome,
-          phone: formData.telefone
+          fullName: formData.nome
         }
         
-        console.log('Dados sendo enviados:', novoCliente)
+        console.log('📝 Dados sendo enviados para cadastro:', novoCliente)
+        
+        // Verifica se todos os campos obrigatórios estão preenchidos
+        if (!novoCliente.email || !novoCliente.password || !novoCliente.fullName) {
+          alert('Por favor, preencha todos os campos obrigatórios (Nome, Email e Senha).');
+          return;
+        }
+        
         const response = await clienteService.create(novoCliente)
-        console.log('Resposta da API:', response)
+        console.log('✅ Resposta da API:', response)
         
         alert('Cadastro realizado com sucesso! Faça login para continuar.')
         setIsLogin(true)
         setFormData({ email: '', senha: '', nome: '', telefone: '' })
       }
     } catch (error) {
-      console.error('Erro completo:', error)
-      console.error('Resposta do erro:', error.response)
+      console.error('❌ Erro completo:', error)
+      console.error('❌ Resposta do erro:', error.response)
+      
       if (isLogin) {
         alert('Erro ao fazer login. Verifique suas credenciais.')
       } else {
-        if (error.response?.status === 400) {
-          alert('Email já cadastrado!')
-        } else if (error.response?.status === 409) {
-          alert('Email já existe no sistema!')
+        // Tratamento detalhado de erros de cadastro
+        let mensagemErro = 'Erro ao processar cadastro. ';
+        
+        if (error.code === 'ECONNABORTED') {
+          mensagemErro = 'Timeout: O servidor demorou para responder. Tente novamente.';
+        } else if (error.code === 'ERR_NETWORK') {
+          mensagemErro = 'Erro de rede: Verifique sua conexão com a internet.';
+        } else if (error.response) {
+          const status = error.response.status;
+          const data = error.response.data;
+          
+          switch (status) {
+            case 400:
+              mensagemErro = data?.message || 'Dados inválidos. Verifique os campos preenchidos.';
+              break;
+            case 409:
+              mensagemErro = 'Email já cadastrado no sistema!';
+              break;
+            case 500:
+              mensagemErro = 'Erro interno do servidor. Tente novamente em alguns minutos.';
+              console.error('🔴 Erro 500 - Detalhes:', data);
+              break;
+            default:
+              mensagemErro = data?.message || `Erro ${status}: Tente novamente.`;
+          }
         } else {
-          alert(`Erro ao processar solicitação: ${error.response?.data?.message || error.message || 'Tente novamente.'}`)
+          mensagemErro = 'Erro de conexão com o servidor. Verifique se o backend está funcionando.';
         }
+        
+        alert(mensagemErro);
       }
     }
   }
