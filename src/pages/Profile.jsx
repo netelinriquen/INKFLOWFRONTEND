@@ -16,7 +16,7 @@ const Profile = () => {
     setFormData({
       fullName: user.nome || '',
       email: user.email || '',
-      phone: user.telefone || ''
+      telefone: user.telefone || ''
     })
   }, [])
 
@@ -38,27 +38,15 @@ const Profile = () => {
         clienteId = cliente.id
       }
 
-      // Como a API não tem PUT, vamos deletar e recriar
-      await clienteService.delete(clienteId)
-      
-      // Recria o usuário com os novos dados
-      const novoUsuario = {
-        username: formData.email.split('@')[0],
-        email: formData.email,
-        password: user.password || '123456', // Mantém senha anterior ou padrão
-        fullName: formData.fullName,
-        phone: formData.phone
-      }
-      
-      const response = await clienteService.create(novoUsuario)
+      // Usa o método update da API
+      await clienteService.update(clienteId, formData)
       
       // Atualiza localStorage com novos dados
       const updatedUser = {
-        id: response.data.id,
+        ...user,
         nome: formData.fullName,
         email: formData.email,
-        telefone: formData.phone,
-        isAdmin: user.isAdmin
+        telefone: formData.telefone
       }
       localStorage.setItem('user', JSON.stringify(updatedUser))
       
@@ -181,8 +169,8 @@ const Profile = () => {
                 <label style={{ display: 'block', marginBottom: '0.5rem' }}>Telefone:</label>
                 <input
                   type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  value={formData.telefone}
+                  onChange={(e) => setFormData({...formData, telefone: e.target.value})}
                   style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -210,7 +198,7 @@ const Profile = () => {
                     setFormData({
                       fullName: user.nome || '',
                       email: user.email || '',
-                      phone: user.telefone || ''
+                      telefone: user.telefone || ''
                     })
                   }}
                   className="btn"
