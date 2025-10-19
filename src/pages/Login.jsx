@@ -59,7 +59,7 @@ const Login = () => {
           email: formData.email,
           password: formData.senha,
           fullName: formData.nome,
-          phone: formData.telefone
+          telefone: formData.telefone
         }
         
         console.log('Dados sendo enviados:', novoCliente)
