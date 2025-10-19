@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { clienteService } from '../services/inkflowApi'
 
@@ -12,11 +12,11 @@ const Profile = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}')
   
   // Inicializa formData com dados do usuário
-  useState(() => {
+  useEffect(() => {
     setFormData({
-      nome: user.nome || '',
+      fullName: user.nome || '',
       email: user.email || '',
-      telefone: user.telefone || ''
+      phone: user.telefone || ''
     })
   }, [])
 
@@ -127,8 +127,8 @@ const Profile = () => {
                 <label style={{ display: 'block', marginBottom: '0.5rem' }}>Nome:</label>
                 <input
                   type="text"
-                  value={formData.nome}
-                  onChange={(e) => setFormData({...formData, nome: e.target.value})}
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                   required
                   style={{
                     width: '100%',
@@ -163,8 +163,8 @@ const Profile = () => {
                 <label style={{ display: 'block', marginBottom: '0.5rem' }}>Telefone:</label>
                 <input
                   type="tel"
-                  value={formData.telefone}
-                  onChange={(e) => setFormData({...formData, telefone: e.target.value})}
+                  value={formData.phone}
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   style={{
                     width: '100%',
                     padding: '0.75rem',
@@ -190,9 +190,9 @@ const Profile = () => {
                   onClick={() => {
                     setEditing(false)
                     setFormData({
-                      nome: user.nome || '',
+                      fullName: user.nome || '',
                       email: user.email || '',
-                      telefone: user.telefone || ''
+                      phone: user.telefone || ''
                     })
                   }}
                   className="btn"
