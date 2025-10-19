@@ -24,23 +24,49 @@ const Profile = () => {
     e.preventDefault()
     setLoading(true)
     try {
-      // Atualiza apenas o localStorage (API não suporta PUT)
-      const updatedUser = { 
-        ...user, 
+      let clienteId = user.id
+      
+      // Se não tem ID, busca pelo email
+      if (!clienteId) {
+        const response = await clienteService.getAll()
+        const cliente = response.data.find(c => c.email === user.email)
+        if (!cliente) {
+          alert('Usuário não encontrado')
+          setLoading(false)
+          return
+        }
+        clienteId = cliente.id
+      }
+
+      // Como a API não tem PUT, vamos deletar e recriar
+      await clienteService.delete(clienteId)
+      
+      // Recria o usuário com os novos dados
+      const novoUsuario = {
+        username: formData.email.split('@')[0],
+        email: formData.email,
+        password: user.password || '123456', // Mantém senha anterior ou padrão
+        fullName: formData.fullName,
+        phone: formData.phone
+      }
+      
+      const response = await clienteService.create(novoUsuario)
+      
+      // Atualiza localStorage com novos dados
+      const updatedUser = {
+        id: response.data.id,
         nome: formData.fullName,
         email: formData.email,
-        telefone: formData.phone
+        telefone: formData.phone,
+        isAdmin: user.isAdmin
       }
       localStorage.setItem('user', JSON.stringify(updatedUser))
       
-      alert('Perfil atualizado localmente!')
+      alert('Perfil atualizado com sucesso!')
       setEditing(false)
-      
-      // Recarrega a página para atualizar os dados
-      window.location.reload()
     } catch (error) {
       console.error('Erro ao atualizar:', error)
-      alert('Falha ao atualizar perfil')
+      alert(`Erro: ${error.response?.data?.message || 'Falha ao atualizar'}`)
     } finally {
       setLoading(false)
     }
