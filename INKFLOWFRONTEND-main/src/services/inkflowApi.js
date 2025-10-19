@@ -45,58 +45,56 @@ api.interceptors.response.use(
 // Serviços de Cliente
 export const clienteService = {
   // Listar todos os clientes
-  getAll: () => api.get('/clientes'),
+  getAll: () => api.get('/api/clientes'),
   
   // Buscar cliente por ID
-  getById: (id) => api.get(`/clientes/${id}`),
+  getById: (id) => api.get(`/api/clientes/${id}`),
   
   // Criar novo cliente com validação
   create: (cliente) => {
-    // Validação básica dos dados
     const dadosValidados = {
       username: cliente.username || cliente.email?.split('@')[0] || '',
       email: cliente.email || '',
       password: cliente.password || '',
-      fullName: cliente.fullName || cliente.nome || '',
-      phone: cliente.phone || cliente.telefone || ''
+      fullName: cliente.fullName || cliente.nome || ''
     };
     
-    console.log('📝 Dados do cliente validados:', dadosValidados);
-    return api.post('/clientes', dadosValidados);
+    console.log('📝 Dados validados:', dadosValidados);
+    return api.post('/api/clientes', dadosValidados);
   },
   
   // Atualizar cliente
-  update: (id, cliente) => api.put(`/clientes/${id}`, cliente),
+  update: (id, cliente) => api.put(`/api/clientes/${id}`, cliente),
   
   // Deletar cliente
-  delete: (id) => api.delete(`/clientes/${id}`)
+  delete: (id) => api.delete(`/api/clientes/${id}`)
 };
 
 // Serviços de Agendamento
 export const agendamentoService = {
   // Listar todos os agendamentos
-  getAll: () => api.get('/agendamentos'),
+  getAll: () => api.get('/api/agendamentos'),
   
   // Buscar agendamento por ID
-  getById: (id) => api.get(`/agendamentos/${id}`),
+  getById: (id) => api.get(`/api/agendamentos/${id}`),
   
   // Buscar por status
-  getByStatus: (status) => api.get(`/agendamentos/status/${status}`),
+  getByStatus: (status) => api.get(`/api/agendamentos/status/${status}`),
   
   // Criar novo agendamento
-  create: (agendamento) => api.post('/agendamentos', agendamento),
+  create: (agendamento) => api.post('/api/agendamentos', agendamento),
   
   // Atualizar agendamento
-  update: (id, agendamento) => api.put(`/agendamentos/${id}`, agendamento),
+  update: (id, agendamento) => api.put(`/api/agendamentos/${id}`, agendamento),
   
   // Deletar agendamento
-  delete: (id) => api.delete(`/agendamentos/${id}`)
+  delete: (id) => api.delete(`/api/agendamentos/${id}`)
 };
 
 // Teste de conexão
 export const testConnection = () => {
   console.log('🔍 Testando conexão com:', API_BASE_URL);
-  return api.get('/test');
+  return api.get('/api/test');
 };
 
 // Função para testar se o backend está online
