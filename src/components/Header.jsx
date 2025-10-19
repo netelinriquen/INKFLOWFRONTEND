@@ -45,6 +45,7 @@ const Header = () => {
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ color: 'var(--text-light)' }}>Olá, {user.nome || user.email}</span>
+              <Link to="/profile" className="login-btn">👤 Perfil</Link>
               {user.isAdmin && (
                 <Link to="/admin" className="login-btn">⚙️</Link>
               )}
