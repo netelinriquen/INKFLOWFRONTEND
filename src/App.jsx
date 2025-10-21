@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Chatbot from './components/Chatbot'
@@ -13,12 +14,23 @@ import AdminDashboard from './pages/AdminDashboard'
 import Profile from './pages/Profile'
 import TestConnection from './components/TestConnection'
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
+
 function AppContent() {
   const location = useLocation()
   const isLoginPage = location.pathname === '/login'
 
   return (
     <div className="App">
+      <ScrollToTop />
       {!isLoginPage && <Header />}
       <main>
         <Routes>
