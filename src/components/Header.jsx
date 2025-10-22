@@ -38,6 +38,18 @@ const Header = () => {
     }
   }
 
+  const handleServicosClick = (e) => {
+    e.preventDefault()
+    if (location.pathname === '/') {
+      document.getElementById('servicos')?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate('/')
+      setTimeout(() => {
+        document.getElementById('servicos')?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    }
+  }
+
   return (
     <header>
       <nav>
@@ -46,7 +58,7 @@ const Header = () => {
           <li><Link to="/" className={isActive('/')}>Home</Link></li>
           <li><a href="#sobre-nos" onClick={handleSobreNosClick} className={isActive('/sobre')}>Sobre Nós</a></li>
           <li><Link to="/portfolio" className={isActive('/portfolio')}>Portfólio</Link></li>
-          <li><Link to="/servicos" className={isActive('/servicos')}>Serviços</Link></li>
+          <li><a href="#servicos" onClick={handleServicosClick} className={isActive('/servicos')}>Serviços</a></li>
           <li><Link to="/agendamento" className={isActive('/agendamento')}>Agendamento</Link></li>
           <li><Link to="/contato" className={isActive('/contato')}>Contato</Link></li>
           {user ? (

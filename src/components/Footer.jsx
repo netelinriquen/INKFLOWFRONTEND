@@ -1,6 +1,18 @@
 const Footer = () => {
   return (
-    <footer>
+    <footer style={{
+      background: `
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.02) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(135deg, rgba(255,255,255,0.01) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(255,255,255,0.01) 25%, transparent 25%),
+        linear-gradient(145deg, #1a1a1a, #0f0f0f)
+      `,
+      backgroundSize: '60px 60px, 80px 80px, 40px 40px, 40px 40px, 100% 100%',
+      border: '1px solid rgba(255,255,255,0.1)',
+      padding: '3rem 2rem',
+      margin: '0'
+    }}>
       <div className="social-links-footer">
         <a href="https://www.instagram.com/inkflowstudios" target="_blank" rel="noopener noreferrer" className="social-link">
           <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
