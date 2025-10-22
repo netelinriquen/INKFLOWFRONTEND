@@ -171,10 +171,7 @@ const Services = () => {
             alt="Mão segurando máquina de tatuagem"
             style={{
               width: '400px',
-              height: 'auto',
-              borderRadius: '12px',
-              boxShadow: '0px 0px 40px rgba(255,255,255,0.05)',
-              filter: 'contrast(1.05)'
+              height: 'auto'
             }}
           />
         </div>
