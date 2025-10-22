@@ -28,6 +28,19 @@ const Login = () => {
       return
     }
     
+    // Usuário de teste local
+    if (isLogin && formData.email === 'teste@teste.com' && formData.senha === '123') {
+      localStorage.setItem('user', JSON.stringify({ 
+        id: 999,
+        email: formData.email, 
+        nome: 'Usuário Teste',
+        isAdmin: false 
+      }))
+      alert('Login de teste realizado!')
+      navigate('/agendamento')
+      return
+    }
+    
     try {
       if (isLogin) {
         const response = await clienteService.getAll()
