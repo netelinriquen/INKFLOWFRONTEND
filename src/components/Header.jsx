@@ -4,6 +4,7 @@ import './Header.css'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [user, setUser] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
@@ -53,13 +54,21 @@ const Header = () => {
           <li><Link to="/agendamento" className={isActive('/agendamento')}>Agendamento</Link></li>
           <li><Link to="/contato" className={isActive('/contato')}>Contato</Link></li>
           {user ? (
-            <>
-              <li><Link to="/perfil" className={isActive('/perfil')}>👤 Perfil</Link></li>
-              {user.isAdmin && (
-                <li><Link to="/admin" className={isActive('/admin')}>⚙️ Admin</Link></li>
-              )}
-              <li><button onClick={handleLogout} className="login-btn" style={{background: 'none', border: 'none', color: 'var(--text-light)', cursor: 'pointer'}}>Sair</button></li>
-            </>
+            <li className="user-menu">
+              <div className="user-icon" onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M12 14c-6 0-8 4-8 4v2h16v-2s-2-4-8-4z"/>
+                </svg>
+              </div>
+              <div className={`dropdown-menu ${isUserMenuOpen ? 'show' : ''}`}>
+                <Link to="/perfil" onClick={() => setIsUserMenuOpen(false)}>Perfil</Link>
+                {user.isAdmin && (
+                  <Link to="/admin" onClick={() => setIsUserMenuOpen(false)}>Admin</Link>
+                )}
+                <button onClick={handleLogout}>Sair</button>
+              </div>
+            </li>
           ) : (
             <li><Link to="/login" className={isActive('/login')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
