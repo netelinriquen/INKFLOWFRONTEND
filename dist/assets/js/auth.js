@@ -18,7 +18,7 @@ class AuthSystem {
                         id: 1,
                         name: 'Cliente Demo',
                         email: 'demo@inkflow.com',
-                        password: '123456',
+                        password: 'demo123',
                         phone: '(11) 99999-9999',
                         birth: '1990-01-01',
                         createdAt: new Date().toISOString()

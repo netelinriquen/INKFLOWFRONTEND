@@ -13,6 +13,8 @@ import Booking from './pages/Booking'
 import AdminDashboard from './pages/AdminDashboard'
 import Profile from './pages/Profile'
 import TestConnection from './components/TestConnection'
+import Dashboard from './components/Dashboard'
+import DashboardLogin from './pages/DashboardLogin'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -26,7 +28,7 @@ function ScrollToTop() {
 
 function AppContent() {
   const location = useLocation()
-  const isLoginPage = location.pathname === '/login'
+  const isLoginPage = location.pathname === '/login' || location.pathname === '/dashboard-login' || location.pathname === '/dashboard'
 
   return (
     <div className="App">
@@ -42,6 +44,8 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/agendamento" element={<Booking />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard-login" element={<DashboardLogin />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="/test" element={<TestConnection />} />
         </Routes>
