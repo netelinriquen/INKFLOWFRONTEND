@@ -12,7 +12,6 @@ const api = axios.create({
 // Serviços de Cliente
 export const clienteService = {
   // Listar todos os clientes
-<<<<<<< HEAD
   getAll: () => api.get('/clientes'),
   
   // Buscar cliente por ID
@@ -26,21 +25,6 @@ export const clienteService = {
   
   // Deletar cliente
   delete: (id) => api.delete(`/clientes/${id}`)
-=======
-  getAll: () => api.get('/api/clientes'),
-  
-  // Buscar cliente por ID
-  getById: (id) => api.get(`/api/clientes/${id}`),
-  
-  // Criar novo cliente
-  create: (cliente) => api.post('/api/clientes', cliente),
-  
-  // Atualizar cliente
-  update: (id, cliente) => api.put(`/api/clientes/${id}`, cliente),
-  
-  // Deletar cliente
-  delete: (id) => api.delete(`/api/clientes/${id}`)
->>>>>>> ebcd178 (resolvido se pa)
 };
 
 // Serviços de Agendamento
