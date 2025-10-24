@@ -24,7 +24,7 @@ export const clienteService = {
   update: (id, cliente) => api.put(`/api/clientes/${id}`, cliente),
   
   // Deletar cliente
-  delete: (id) => api.delete(`/api/clientes/${id}`)
+  delete: (id) => api.delete(`api/clientes/${id}`)
 };
 
 // Serviços de Agendamento
