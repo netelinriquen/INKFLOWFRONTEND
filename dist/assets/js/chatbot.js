@@ -63,7 +63,7 @@ class InkFlowChatbot {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-goog-api-key': import.meta.env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY
+                    'X-goog-api-key': 'AIzaSyAyrkt9DFCPm5TK5saApydx1nP8vI4b9VE'
                 },
                 body: JSON.stringify({
                     contents: [{

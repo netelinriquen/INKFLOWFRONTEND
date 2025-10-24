@@ -17,14 +17,14 @@ const Login = () => {
     e.preventDefault()
     
     // Login de admin
-    if (isLogin && formData.email === 'admin@dashboard.com' && formData.senha === 'admin123') {
+    if (isLogin && formData.email === 'admin@inkflow.com' && formData.senha === 'admin123') {
       localStorage.setItem('user', JSON.stringify({ 
         email: formData.email, 
         nome: 'Administrador',
         isAdmin: true 
       }))
       alert('Login de administrador realizado!')
-      navigate('/dashboard')
+      navigate('/admin')
       return
     }
     
