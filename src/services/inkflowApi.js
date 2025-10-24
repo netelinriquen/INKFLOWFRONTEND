@@ -12,19 +12,19 @@ const api = axios.create({
 // Serviços de Cliente
 export const clienteService = {
   // Listar todos os clientes
-  getAll: () => api.get('/clientes'),
+  getAll: () => api.get('api/clientes'),
   
   // Buscar cliente por ID
-  getById: (id) => api.get(`/clientes/${id}`),
+  getById: (id) => api.get(`api/clientes/${id}`),
   
   // Criar novo cliente
-  create: (cliente) => api.post('/clientes', cliente),
+  create: (cliente) => api.post('api/clientes', cliente),
   
   // Atualizar cliente
-  update: (id, cliente) => api.put(`/clientes/${id}`, cliente),
+  update: (id, cliente) => api.put(`api/clientes/${id}`, cliente),
   
   // Deletar cliente
-  delete: (id) => api.delete(`/clientes/${id}`)
+  delete: (id) => api.delete(`api/clientes/${id}`)
 };
 
 // Serviços de Agendamento
