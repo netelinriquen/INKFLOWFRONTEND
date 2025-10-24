@@ -12,6 +12,7 @@ const api = axios.create({
 // Serviços de Cliente
 export const clienteService = {
   // Listar todos os clientes
+<<<<<<< HEAD
   getAll: () => api.get('/clientes'),
   
   // Buscar cliente por ID
@@ -25,27 +26,42 @@ export const clienteService = {
   
   // Deletar cliente
   delete: (id) => api.delete(`/clientes/${id}`)
+=======
+  getAll: () => api.get('/api/clientes'),
+  
+  // Buscar cliente por ID
+  getById: (id) => api.get(`/api/clientes/${id}`),
+  
+  // Criar novo cliente
+  create: (cliente) => api.post('/api/clientes', cliente),
+  
+  // Atualizar cliente
+  update: (id, cliente) => api.put(`/api/clientes/${id}`, cliente),
+  
+  // Deletar cliente
+  delete: (id) => api.delete(`/api/clientes/${id}`)
+>>>>>>> ebcd178 (resolvido se pa)
 };
 
 // Serviços de Agendamento
 export const agendamentoService = {
   // Listar todos os agendamentos
-  getAll: () => api.get('/agendamentos'),
+  getAll: () => api.get('/api/agendamentos'),
   
   // Buscar agendamento por ID
-  getById: (id) => api.get(`/agendamentos/${id}`),
+  getById: (id) => api.get(`api/agendamentos/${id}`),
   
   // Buscar por status
   getByStatus: (status) => api.get(`/agendamentos/status/${status}`),
   
   // Criar novo agendamento
-  create: (agendamento) => api.post('/agendamentos', agendamento),
+  create: (agendamento) => api.post('api/agendamentos', agendamento),
   
   // Atualizar agendamento
-  update: (id, agendamento) => api.put(`/agendamentos/${id}`, agendamento),
+  update: (id, agendamento) => api.put(`api/agendamentos/${id}`, agendamento),
   
   // Deletar agendamento
-  delete: (id) => api.delete(`/agendamentos/${id}`)
+  delete: (id) => api.delete(`api/agendamentos/${id}`)
 };
 
 // Teste de conexão
