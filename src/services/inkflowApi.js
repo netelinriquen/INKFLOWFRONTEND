@@ -25,13 +25,15 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 403) {
+    const publicEndpoints = ['/chat', '/contato', '/leads'];
+    const isPublicEndpoint = publicEndpoints.some(path => error.config?.url?.includes(path));
+
+    if (error.response?.status === 403 && !isPublicEndpoint) {
       const isSessionError = error.response?.data?.message?.includes('sessão')
         || !localStorage.getItem('token');
       if (isSessionError) {
         window.location.href = '/';
       }
-      return Promise.reject(error);
     }
     return Promise.reject(error);
   }
@@ -137,7 +139,10 @@ export const mensagemServiceExtended = {
 
 // Serviços de Chatbot
 export const chatService = {
-  sendMessage: (message) => api.post('/chat', { message }, { baseURL: API_BASE_URL.replace('/v1', '') }),
+  sendMessage: (payload) => {
+    const data = typeof payload === 'string' ? { message: payload } : payload;
+    return api.post('/chat', data, { baseURL: API_BASE_URL.replace('/v1', '') });
+  },
 };
 
 // Serviços de Contato
