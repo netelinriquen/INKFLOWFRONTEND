@@ -130,7 +130,7 @@ const Booking = () => {
         const artistaSelecionado = artistsOptions.find(a => a?.name === bookingState.artist);
         if (artistaSelecionado) {
             setAvailableDays([]);
-            setBookingState(prev => ({ ...prev, day: '', time: '' }));
+            setBookingState(prev => ({ ...prev, day: '', time: prev.time }));
             setIsLoadingAvailability(true);
             artistaService.getAvailability(artistaSelecionado.id, currentYear, adjustedMonth + 1)
                 .then(res => {
@@ -146,7 +146,7 @@ const Booking = () => {
         } else {
             setAvailableDays([]);
         }
-    }, [bookingState.artist, artistsOptions, currentMonthOffset, currentYear, adjustedMonth]);
+    }, [bookingState.artist, currentMonthOffset, currentYear, adjustedMonth, artistsOptions.length]);
 
     const monthNames = [
         'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
@@ -234,7 +234,7 @@ const Booking = () => {
         } else {
             setAvailableSlots([]);
         }
-    }, [bookingState.day, bookingState.artist, currentMonthOffset, currentYear, adjustedMonth, artistsOptions]);
+    }, [bookingState.day, bookingState.artist, currentMonthOffset, currentYear, adjustedMonth, artistsOptions.length]);
 
     const defaultTimeSlots = useMemo(() => Array.from({ length: 12 }, (_, i) => {
         const hour = i + 9;
@@ -548,24 +548,18 @@ const Booking = () => {
                                         <h4>HORÁRIO PREFERENCIAL</h4>
                                         <div className="time-periods-grid">
                                             {timeSlots.map(ts => {
-                                                const currentHour = currentHourBr;
-                                                const slotHour = parseInt(ts.label.split(':')[0], 10);
-                                                const isToday = currentMonthOffset === 0 && bookingState.day === todayDate.toString();
-                                                const isPast = isToday && slotHour <= currentHour;
                                                 const isSelected = bookingState.time === ts.id || bookingState.time === ts.label;
 
                                                 return (
                                                     <div
                                                         key={ts.id}
                                                         onClick={() => {
-                                                            if (isPast) return;
                                                             setBookingState(prev => ({
                                                                 ...prev,
                                                                 time: prev.time === ts.id ? '' : ts.id
                                                             }));
                                                         }}
-                                                        className={`time-period ${isSelected ? 'selected' : ''} ${isPast ? 'disabled' : ''}`}
-                                                        style={isPast ? { opacity: 0.3, cursor: 'not-allowed', backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.05)' } : {}}
+                                                        className={`time-period ${isSelected ? 'selected' : ''}`}
                                                     >
                                                         <span className="time-period-label">{ts.label}</span>
                                                     </div>

@@ -69,7 +69,7 @@ export const artistaService = {
   getAllArtists: () => api.get('/artists', { baseURL: API_BASE_URL.replace('/v1', '') }),
   getById: (id) => api.get(`/artists/${id}`, { baseURL: API_BASE_URL.replace('/v1', '') }),
   getAvailability: (id, ano, mes) => api.get(`/artists/${id}/availability`, { params: { ano, mes }, baseURL: API_BASE_URL.replace('/v1', '') }),
-  getSlots: (id, data) => api.get(`/artists/${id}/availability/slots`, { params: { data }, baseURL: API_BASE_URL.replace('/v1', '') }),
+  getSlots: (id, data) => api.get(`/v1/artists/${id}/availability/slots`, { params: { data } }).catch(() => api.get(`/artists/${id}/availability/slots`, { params: { data }, baseURL: API_BASE_URL.replace('/v1', '') })),
   update: (id, data) => api.put(`/artistas/${id}`, data, { baseURL: API_BASE_URL.replace('/v1', '') }),
   uploadFoto: (id, formData) => api.post(`/artistas/${id}/foto`, formData, {
     baseURL: API_BASE_URL.replace('/v1', ''),
