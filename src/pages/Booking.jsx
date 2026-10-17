@@ -110,86 +110,118 @@ const Booking = () => {
         }
     }, [location.search, artistsOptions])
 
-    // Calculo de mes/ano com base no offset
-    const brTime = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
-    const rawMonth = brTime.getMonth() + currentMonthOffset;
-    const currentYear = brTime.getFullYear() + Math.floor(rawMonth / 12);
-    const adjustedMonth = ((rawMonth % 12) + 12) % 12;
-    const todayDate = currentMonthOffset === 0 ? brTime.getDate() : 0;
-    const currentHourBr = brTime.getHours();
+    // Calculo robusto de mes/ano com base no offset usando horario de Brasilia
+    const nowBr = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+    const viewDate = new Date(nowBr.getFullYear(), nowBr.getMonth() + currentMonthOffset, 1);
+    const currentYear = viewDate.getFullYear();
+    const adjustedMonth = viewDate.getMonth();
+    const todayDate = currentMonthOffset === 0 ? nowBr.getDate() : 0;
+    const currentHourBr = nowBr.getHours();
 
-    // Efeito para carregar disponibilidade do artista (recarrega quando muda mes)
+    // Reseta selecao de dia e horario ao navegar entre meses
     useEffect(() => {
-        const artistaSelecionado = artistsOptions.find(a => a?.name === bookingState.artist)
+        setBookingState(prev => ({ ...prev, day: '', time: '' }));
+        setAvailableSlots([]);
+    }, [currentMonthOffset]);
+
+    // Efeito para carregar disponibilidade do artista (recarrega quando muda mes ou artista)
+    useEffect(() => {
+        const artistaSelecionado = artistsOptions.find(a => a?.name === bookingState.artist);
         if (artistaSelecionado) {
-            setAvailableDays([]) // Limpa dados antigos
-            setBookingState(prev => ({ ...prev, day: '', time: '' })) // Reseta selecao
-            setIsLoadingAvailability(true)
+            setAvailableDays([]);
+            setBookingState(prev => ({ ...prev, day: '', time: '' }));
+            setIsLoadingAvailability(true);
             artistaService.getAvailability(artistaSelecionado.id, currentYear, adjustedMonth + 1)
                 .then(res => {
                     const mappedDays = (res.data || []).filter(d => d.data).map(d => ({
                         day: parseInt(d.data.split('-')[2], 10).toString(),
                         fullDate: d.data,
                         active: d.disponivel
-                    }))
-                    setAvailableDays(mappedDays)
+                    }));
+                    setAvailableDays(mappedDays);
                 })
                 .catch(() => {})
-                .finally(() => setIsLoadingAvailability(false))
+                .finally(() => setIsLoadingAvailability(false));
+        } else {
+            setAvailableDays([]);
         }
-    }, [bookingState.artist, artistsOptions, currentMonthOffset])
+    }, [bookingState.artist, artistsOptions, currentMonthOffset, currentYear, adjustedMonth]);
+
+    const monthNames = [
+        'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+        'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
+    ];
+    const currentMonthName = monthNames[adjustedMonth];
+
+    // Quantidade real de dias no mes selecionado (28, 29, 30 ou 31)
+    const daysInMonth = new Date(currentYear, adjustedMonth + 1, 0).getDate();
+    // Dia da semana do dia 1 do mes (0 = Domingo, 1 = Segunda ... 6 = Sabado)
+    const firstDayOfWeek = new Date(currentYear, adjustedMonth, 1).getDay();
+    // No InkFlow a semana comeca na Segunda (SEG = 0 .. DOM = 6)
+    const startPadding = (firstDayOfWeek + 6) % 7;
+
+    // Dias do mes anterior para preenchimento visual dos espacos vazios iniciais
+    const prevMonthDaysInMonth = new Date(currentYear, adjustedMonth, 0).getDate();
+    const emptyDays = Array.from(
+        { length: startPadding },
+        (_, i) => prevMonthDaysInMonth - startPadding + i + 1
+    );
+
+    // Mapeamento dos dias do mes: SEMPRE de 1 ate daysInMonth para respeitar o calendario real
+    const days = Array.from({ length: daysInMonth }, (_, i) => {
+        const d = i + 1;
+        const dayStr = d.toString();
+        const mm = String(adjustedMonth + 1).padStart(2, '0');
+        const dd = String(d).padStart(2, '0');
+        const fullDate = `${currentYear}-${mm}-${dd}`;
+
+        let active = true;
+
+        if (availableDays.length > 0) {
+            // Se temos a disponibilidade do artista retornada da API
+            const found = availableDays.find(ad => ad.fullDate === fullDate || ad.day === dayStr);
+            active = found ? Boolean(found.active) : false;
+        } else {
+            // Se nenhum artista foi selecionado ou os dados ainda estao carregando
+            const dayOfWeek = new Date(currentYear, adjustedMonth, d).getDay();
+            if (dayOfWeek === 0) active = false; // Domingos fechados por padrao
+        }
+
+        // Bloquear dias passados no mes atual (ou se o mes for anterior)
+        if (currentMonthOffset === 0 && d < todayDate) {
+            active = false;
+        } else if (currentMonthOffset < 0) {
+            active = false;
+        }
+
+        return {
+            day: dayStr,
+            fullDate,
+            active,
+            isToday: currentMonthOffset === 0 && d === todayDate
+        };
+    });
 
     // Efeito para carregar slots do dia selecionado
     useEffect(() => {
-        const artistaSelecionado = artistsOptions.find(a => a?.name === bookingState.artist)
+        const artistaSelecionado = artistsOptions.find(a => a?.name === bookingState.artist);
         if (artistaSelecionado && bookingState.day) {
-            const dayObj = availableDays.find(d => d.day === bookingState.day)
-            if (dayObj) {
-                setAvailableSlots([]) // Limpa slots antigos
-                setBookingState(prev => ({ ...prev, time: '' })) // Reseta seleção de horário
-                setIsLoadingSlots(true)
+            const dayObj = days.find(d => d.day === bookingState.day);
+            if (dayObj && dayObj.fullDate) {
+                setAvailableSlots([]);
+                setBookingState(prev => ({ ...prev, time: '' }));
+                setIsLoadingSlots(true);
                 artistaService.getSlots(artistaSelecionado.id, dayObj.fullDate)
                     .then(res => {
-                        const slots = res.data?.slots || []
-                        const mappedSlots = slots.map(s => ({ id: s, label: s, active: true }))
-                        setAvailableSlots(mappedSlots)
+                        const slots = res.data?.slots || [];
+                        const mappedSlots = slots.map(s => ({ id: s, label: s, active: true }));
+                        setAvailableSlots(mappedSlots);
                     })
-                .catch(() => {})
-                    .finally(() => setIsLoadingSlots(false))
+                    .catch(() => {})
+                    .finally(() => setIsLoadingSlots(false));
             }
         }
-    }, [bookingState.day, bookingState.artist, artistsOptions, availableDays])
-
-    const monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
-    const currentMonthName = monthNames[adjustedMonth];
-
-    const daysInMonth = new Date(currentYear, adjustedMonth + 1, 0).getDate();
-    const firstDayOfMonth = new Date(currentYear, adjustedMonth, 1).getDay();
-    const startPadding = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
-
-    const prevMonthDaysInMonth = new Date(currentYear, adjustedMonth, 0).getDate();
-    const emptyDays = Array.from({ length: startPadding }, (_, i) => prevMonthDaysInMonth - startPadding + i + 1);
-
-    const days = availableDays.length > 0 ? availableDays.map(d => {
-        // Desabilita dias passados mesmo nos dados do backend
-        let active = d.active;
-        const dayNum = parseInt(d.day, 10);
-        if (currentMonthOffset === 0 && dayNum < todayDate) active = false;
-        return { ...d, active, isDot: currentMonthOffset === 0 && dayNum === todayDate };
-    }) : Array.from({ length: daysInMonth }, (_, i) => {
-        const d = i + 1;
-        const dayOfWeek = new Date(currentYear, adjustedMonth, d).getDay();
-        let active = true;
-        if (dayOfWeek === 0) active = false; // Domingos fechados
-        if (currentMonthOffset === 0 && d < todayDate) active = false; // Dias passados bloqueados apenas no mês atual
-
-        return {
-            day: d.toString(),
-            active,
-            isDot: currentMonthOffset === 0 && d === todayDate,
-            content: d.toString()
-        };
-    });
+    }, [bookingState.day, bookingState.artist, artistsOptions, days]);
 
     const timeSlots = availableSlots.length > 0 ? availableSlots : Array.from({ length: 12 }, (_, i) => {
         const hour = i + 9;
@@ -495,7 +527,7 @@ const Booking = () => {
                                                 onClick={() => d.active && setBookingState(prev => ({ ...prev, day: prev.day === d.day ? '' : d.day }))}
                                                 className={`calendar-day ${!d.active ? 'disabled' : ''} ${bookingState.day === d.day ? 'selected' : ''}`}
                                             >
-                                                {d.isDot ? d.content : d.day}
+                                                {d.day}
                                             </div>
                                         ))}
                                     </div>
@@ -505,7 +537,7 @@ const Booking = () => {
                                             {timeSlots.map(ts => {
                                                 const currentHour = currentHourBr;
                                                 const slotHour = parseInt(ts.label.split(':')[0], 10);
-                                                const isToday = bookingState.day === todayDate.toString();
+                                                const isToday = currentMonthOffset === 0 && bookingState.day === todayDate.toString();
                                                 const isPast = isToday && slotHour <= currentHour;
 
                                                 return (

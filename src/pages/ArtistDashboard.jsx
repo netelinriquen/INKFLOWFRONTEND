@@ -6,7 +6,7 @@ import ScheduleTab from '../components/dashboard/ScheduleTab'
 import PortfolioTab from '../components/dashboard/PortfolioTab'
 import SettingsTab from '../components/dashboard/SettingsTab'
 import MessagesTab from '../components/dashboard/MessagesTab'
-import { agendamentoService, mensagemServiceExtended } from '../services/inkflowApi'
+import { agendamentoService, mensagemServiceExtended, artistaService } from '../services/inkflowApi'
 import { useAuth } from '../contexts/AuthContext'
 import './ArtistDashboard.css'
 
@@ -66,7 +66,47 @@ const ArtistDashboard = () => {
 
   const [viewMode, setViewMode] = useState('monthly')
   const handleViewToggle = (mode) => setViewMode(mode)
-  const [studioOpen, setStudioOpen] = useState(true)
+  const getInitialStudioOpen = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('user') || '{}');
+      if (stored.aceitandoAgendamentos !== undefined) return stored.aceitandoAgendamentos !== false;
+      if (stored.ativo !== undefined) return stored.ativo !== false;
+      if (user?.aceitandoAgendamentos !== undefined) return user.aceitandoAgendamentos !== false;
+      if (user?.ativo !== undefined) return user.ativo !== false;
+    } catch {
+      // fallback
+    }
+    return true;
+  };
+  const [studioOpen, setStudioOpen] = useState(getInitialStudioOpen);
+
+  // Sincronizar configuracao persistida do artista diretamente da API
+  useEffect(() => {
+    const artistaId = user?.artistaId || user?.id;
+    if (!artistaId) return;
+    artistaService.getById(artistaId)
+      .then(res => {
+        const artistaData = res.data;
+        if (artistaData) {
+          const isOpen = (artistaData.aceitandoAgendamentos ?? artistaData.ativo) !== false;
+          setStudioOpen(isOpen);
+          try {
+            const currentStored = JSON.parse(localStorage.getItem('user') || '{}');
+            localStorage.setItem('user', JSON.stringify({
+              ...currentStored,
+              ...artistaData,
+              aceitandoAgendamentos: isOpen,
+              ativo: isOpen
+            }));
+          } catch (e) {
+            console.error('Erro ao atualizar localStorage com status do artista:', e);
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Erro ao carregar configuracoes do artista no dashboard:', err);
+      });
+  }, [user]);
   const [notifOpen, setNotifOpen] = useState(false)
   const [notifItems, setNotifItems] = useState([])
   const [artistaHasNew, setArtistaHasNew] = useState(false)
