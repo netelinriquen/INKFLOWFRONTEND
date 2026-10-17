@@ -169,72 +169,84 @@ const Booking = () => {
     );
 
     // Mapeamento dos dias do mes: SEMPRE de 1 ate daysInMonth para respeitar o calendario real
-    const days = Array.from({ length: daysInMonth }, (_, i) => {
-        const d = i + 1;
-        const dayStr = d.toString();
-        const mm = String(adjustedMonth + 1).padStart(2, '0');
-        const dd = String(d).padStart(2, '0');
-        const fullDate = `${currentYear}-${mm}-${dd}`;
+    const days = useMemo(() => {
+        return Array.from({ length: daysInMonth }, (_, i) => {
+            const d = i + 1;
+            const dayStr = d.toString();
+            const mm = String(adjustedMonth + 1).padStart(2, '0');
+            const dd = String(d).padStart(2, '0');
+            const fullDate = `${currentYear}-${mm}-${dd}`;
 
-        let active = true;
+            let active = true;
 
-        if (availableDays.length > 0) {
-            // Se temos a disponibilidade do artista retornada da API
-            const found = availableDays.find(ad => ad.fullDate === fullDate || ad.day === dayStr);
-            active = found ? Boolean(found.active) : false;
-        } else {
-            // Se nenhum artista foi selecionado ou os dados ainda estao carregando
-            const dayOfWeek = new Date(currentYear, adjustedMonth, d).getDay();
-            if (dayOfWeek === 0) active = false; // Domingos fechados por padrao
-        }
+            if (availableDays.length > 0) {
+                // Se temos a disponibilidade do artista retornada da API
+                const found = availableDays.find(ad => ad.fullDate === fullDate || ad.day === dayStr);
+                active = found ? Boolean(found.active) : false;
+            } else {
+                // Se nenhum artista foi selecionado ou os dados ainda estao carregando
+                const dayOfWeek = new Date(currentYear, adjustedMonth, d).getDay();
+                if (dayOfWeek === 0) active = false; // Domingos fechados por padrao
+            }
 
-        // Bloquear dias passados no mes atual (ou se o mes for anterior)
-        if (currentMonthOffset === 0 && d < todayDate) {
-            active = false;
-        } else if (currentMonthOffset < 0) {
-            active = false;
-        }
+            // Bloquear dias passados no mes atual (ou se o mes for anterior)
+            if (currentMonthOffset === 0 && d < todayDate) {
+                active = false;
+            } else if (currentMonthOffset < 0) {
+                active = false;
+            }
 
-        return {
-            day: dayStr,
-            fullDate,
-            active,
-            isToday: currentMonthOffset === 0 && d === todayDate
-        };
-    });
+            return {
+                day: dayStr,
+                fullDate,
+                active,
+                isToday: currentMonthOffset === 0 && d === todayDate
+            };
+        });
+    }, [daysInMonth, currentYear, adjustedMonth, availableDays, currentMonthOffset, todayDate]);
 
     // Efeito para carregar slots do dia selecionado
     useEffect(() => {
         const artistaSelecionado = artistsOptions.find(a => a?.name === bookingState.artist);
         if (artistaSelecionado && bookingState.day) {
-            const dayObj = days.find(d => d.day === bookingState.day);
-            if (dayObj && dayObj.fullDate) {
-                setAvailableSlots([]);
-                setBookingState(prev => ({ ...prev, time: '' }));
-                setIsLoadingSlots(true);
-                artistaService.getSlots(artistaSelecionado.id, dayObj.fullDate)
-                    .then(res => {
-                        const slots = res.data?.slots || [];
-                        const mappedSlots = slots.map(s => ({ id: s, label: s, active: true }));
-                        setAvailableSlots(mappedSlots);
-                    })
-                    .catch(() => {})
-                    .finally(() => setIsLoadingSlots(false));
-            }
-        }
-    }, [bookingState.day, bookingState.artist, artistsOptions, days]);
+            const mm = String(adjustedMonth + 1).padStart(2, '0');
+            const dd = String(bookingState.day).padStart(2, '0');
+            const targetFullDate = `${currentYear}-${mm}-${dd}`;
 
-    const timeSlots = availableSlots.length > 0 ? availableSlots : Array.from({ length: 12 }, (_, i) => {
+            setIsLoadingSlots(true);
+            artistaService.getSlots(artistaSelecionado.id, targetFullDate)
+                .then(res => {
+                    let rawSlots = [];
+                    if (Array.isArray(res.data)) {
+                        rawSlots = res.data
+                            .filter(item => (typeof item === 'object' && item !== null) ? item.disponivel !== false : true)
+                            .map(item => (typeof item === 'object' && item !== null && item.horario) ? item.horario : String(item));
+                    } else if (res.data?.slots && Array.isArray(res.data.slots)) {
+                        rawSlots = res.data.slots;
+                    }
+                    const mappedSlots = rawSlots.map(s => ({ id: String(s).trim(), label: String(s).trim(), active: true }));
+                    setAvailableSlots(mappedSlots);
+                })
+                .catch(() => {
+                    setAvailableSlots([]);
+                })
+                .finally(() => setIsLoadingSlots(false));
+        } else {
+            setAvailableSlots([]);
+        }
+    }, [bookingState.day, bookingState.artist, currentMonthOffset, currentYear, adjustedMonth, artistsOptions]);
+
+    const defaultTimeSlots = useMemo(() => Array.from({ length: 12 }, (_, i) => {
         const hour = i + 9;
         const timeString = `${hour.toString().padStart(2, '0')}:00`;
         return {
             id: timeString,
             label: timeString,
-            time: '',
-            icon: 'schedule',
-            customSvg: false
+            active: true
         };
-    });
+    }), []);
+
+    const timeSlots = availableSlots.length > 0 ? availableSlots : defaultTimeSlots;
 
     const showToast = (message, type = 'success') => {
         const id = Date.now()
@@ -540,15 +552,19 @@ const Booking = () => {
                                                 const slotHour = parseInt(ts.label.split(':')[0], 10);
                                                 const isToday = currentMonthOffset === 0 && bookingState.day === todayDate.toString();
                                                 const isPast = isToday && slotHour <= currentHour;
+                                                const isSelected = bookingState.time === ts.id || bookingState.time === ts.label;
 
                                                 return (
                                                     <div
                                                         key={ts.id}
                                                         onClick={() => {
                                                             if (isPast) return;
-                                                            setBookingState(prev => ({ ...prev, time: prev.time === ts.id ? '' : ts.id }));
+                                                            setBookingState(prev => ({
+                                                                ...prev,
+                                                                time: prev.time === ts.id ? '' : ts.id
+                                                            }));
                                                         }}
-                                                        className={`time-period ${bookingState.time === ts.id ? 'selected' : ''} ${isPast ? 'disabled' : ''}`}
+                                                        className={`time-period ${isSelected ? 'selected' : ''} ${isPast ? 'disabled' : ''}`}
                                                         style={isPast ? { opacity: 0.3, cursor: 'not-allowed', backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.05)' } : {}}
                                                     >
                                                         <span className="time-period-label">{ts.label}</span>
