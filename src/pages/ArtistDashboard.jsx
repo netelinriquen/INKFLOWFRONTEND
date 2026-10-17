@@ -16,6 +16,8 @@ const ArtistDashboard = () => {
   const [drawerAgendamento, setDrawerAgendamento] = useState(null)
   const [toasts, setToasts] = useState([])
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const profileMenuRef = useRef(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const navigate = useNavigate()
 
@@ -36,6 +38,33 @@ const ArtistDashboard = () => {
       navigate('/login', { replace: true })
     }
   }, [loading, token, navigate])
+
+  // Fechar menu de perfil ao clicar fora ou apertar Esc
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+        setProfileMenuOpen(false)
+      }
+    }
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setProfileMenuOpen(false)
+      }
+    }
+    if (profileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleKeyDown)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [profileMenuOpen])
+
+  // Fechar menu de perfil ao trocar de aba
+  useEffect(() => {
+    setProfileMenuOpen(false)
+  }, [activeTab])
 
   // Persistência de sessão ao usar setas do browser (popstate)
   useEffect(() => {
@@ -366,14 +395,63 @@ const ArtistDashboard = () => {
               </div>
             )}
           </div>
-          <div className="ad-user-info">
+          <div className="ad-user-info" ref={profileMenuRef} style={{ position: 'relative' }}>
             <div className="ad-user-text">
               <p className="ad-user-name">{user?.nome || user?.fullName || 'Artista'}</p>
               <p className="ad-user-role">Artista</p>
             </div>
-            <button className="ad-icon-btn" onClick={handleLogout} title="Sair">
+            <button 
+              className="ad-icon-btn" 
+              onClick={() => setProfileMenuOpen(prev => !prev)} 
+              title="Opções da conta"
+              aria-label="Opções da conta"
+              aria-expanded={profileMenuOpen}
+              aria-haspopup="true"
+              style={{
+                color: profileMenuOpen ? '#E21B3C' : undefined,
+                transition: 'color 0.2s ease'
+              }}
+            >
               <span className="material-symbols-outlined" style={{ fontSize: '1.875rem' }}>account_circle</span>
             </button>
+
+            {profileMenuOpen && (
+              <div className="ad-profile-dropdown" role="menu">
+                <div className="ad-profile-dropdown-header">
+                  <div className="ad-profile-dropdown-name">
+                    {user?.nome || user?.fullName || 'Artista'}
+                  </div>
+                  <div className="ad-profile-dropdown-email">
+                    {user?.email || 'artista@inkflow.com'}
+                  </div>
+                </div>
+
+                <div className="ad-profile-dropdown-body">
+                  <button
+                    className="ad-profile-dropdown-item"
+                    role="menuitem"
+                    onClick={() => {
+                      switchTab('settings')
+                      setProfileMenuOpen(false)
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.25rem', opacity: 0.7 }}>settings</span>
+                    Configurações
+                  </button>
+
+                  <div className="ad-profile-dropdown-divider" />
+
+                  <button
+                    className="ad-profile-dropdown-item danger"
+                    role="menuitem"
+                    onClick={handleLogout}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.25rem' }}>logout</span>
+                    Sair da conta
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
