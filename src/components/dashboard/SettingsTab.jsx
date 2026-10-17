@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { artistaService, disponibilidadeService } from '../../services/inkflowApi'
 
+const parseEspecialidades = (esp) => {
+  if (!esp) return []
+  if (Array.isArray(esp)) return esp.map(t => String(t).trim()).filter(Boolean)
+  if (typeof esp === 'string') return esp.split(',').map(t => t.trim()).filter(Boolean)
+  return []
+}
+
 const SettingsTab = ({ showToast, studioOpen, setStudioOpen, switchTab }) => {
   const { user } = useAuth()
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}')
@@ -10,11 +17,7 @@ const SettingsTab = ({ showToast, studioOpen, setStudioOpen, switchTab }) => {
   const [artistName, setArtistName] = useState(storedUser.nome || storedUser.fullName || '')
   const [artistEmail, setArtistEmail] = useState(storedUser.email || '')
   const [artistBio, setArtistBio] = useState(storedUser.bio || '')
-  const [tags, setTags] = useState(
-    storedUser.especialidades
-      ? storedUser.especialidades.split(',').map(t => t.trim()).filter(Boolean)
-      : []
-  )
+  const [tags, setTags] = useState(parseEspecialidades(storedUser.especialidades))
   const [avatarPreview, setAvatarPreview] = useState(storedUser.fotoUrl || '')
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -45,11 +48,7 @@ const SettingsTab = ({ showToast, studioOpen, setStudioOpen, switchTab }) => {
         setArtistName(artistaData.nome || '')
         setArtistEmail(artistaData.email || '')
         setArtistBio(artistaData.bio || '')
-        setTags(
-          artistaData.especialidades
-            ? artistaData.especialidades.split(',').map(t => t.trim()).filter(Boolean)
-            : []
-        )
+        setTags(parseEspecialidades(artistaData.especialidades))
         setAvatarPreview(artistaData.fotoUrl || '')
         
         // Atualizar localStorage com dados mais recentes
@@ -194,11 +193,7 @@ const SettingsTab = ({ showToast, studioOpen, setStudioOpen, switchTab }) => {
       setArtistName(original.nome || original.fullName || '')
       setArtistEmail(original.email || '')
       setArtistBio(original.bio || '')
-      setTags(
-        original.especialidades
-          ? original.especialidades.split(',').map(t => t.trim()).filter(Boolean)
-          : []
-      )
+      setTags(parseEspecialidades(original.especialidades))
       setAvatarPreview(original.fotoUrl || '')
       showToast('Alterações descartadas.')
     }

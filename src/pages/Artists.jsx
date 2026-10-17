@@ -53,9 +53,10 @@ const Artists = () => {
     const filteredArtists = artists.filter(artist => {
         const nome = (artist.nome || '').toLowerCase();
         const role = (artist.role || '').toLowerCase();
-        const especialidades = (artist.especialidades || []).map(s => s.toLowerCase());
+        const espList = Array.isArray(artist.especialidades) ? artist.especialidades : (typeof artist.especialidades === 'string' ? artist.especialidades.split(',').map(s => s.trim()).filter(Boolean) : []);
+        const especialidades = espList.map(s => s.toLowerCase());
         
-        const matchesFilter = currentFilter === 'all' || (artist.especialidades || []).some(s => s.toUpperCase() === currentFilter.toUpperCase());
+        const matchesFilter = currentFilter === 'all' || espList.some(s => s.toUpperCase() === currentFilter.toUpperCase());
         const matchesSearch = nome.includes(searchTerm) || 
                               role.includes(searchTerm) || 
                               especialidades.some(s => s.includes(searchTerm));
@@ -234,7 +235,7 @@ const Artists = () => {
                                     </div>
                                     <div className="absolute bottom-6 left-6 right-6">
                                         <div className="flex flex-wrap gap-1.5 mb-6 justify-start items-center">
-                                            {(artist.especialidades || []).slice(0, 3).map((esp, i) => (
+                                            {(Array.isArray(artist.especialidades) ? artist.especialidades : (typeof artist.especialidades === 'string' ? artist.especialidades.split(',').map(s => s.trim()) : [])).slice(0, 3).map((esp, i) => (
                                                 <span key={i} className="text-[9px] uppercase tracking-widest bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-white">{esp.toUpperCase()}</span>
                                             ))}
                                         </div>

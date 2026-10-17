@@ -77,7 +77,8 @@ const Booking = () => {
         artistaService.getAllArtists().then(res => {
             const artistsData = res.data || []
             const mapped = (Array.isArray(artistsData) ? artistsData : []).map(a => {
-                const especialidades = (a?.especialidades || []).map(s => s.toLowerCase())
+                const espList = Array.isArray(a?.especialidades) ? a.especialidades : (typeof a?.especialidades === 'string' ? a.especialidades.split(',') : [])
+                const especialidades = espList.map(s => String(s).trim().toLowerCase())
                 const matched = Object.entries(styleKeywords)
                     .filter(([, keywords]) => keywords.some(kw => especialidades.some(e => e.includes(kw))))
                     .map(([style]) => style)

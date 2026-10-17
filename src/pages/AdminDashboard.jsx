@@ -1028,20 +1028,30 @@ const Pagination = ({ total, page, setPage }) => {
   )
 }
 
+const parseEspecialidades = (esp) => {
+  if (!esp) return []
+  if (Array.isArray(esp)) return esp.map(e => String(e).trim()).filter(Boolean)
+  if (typeof esp === 'string') return esp.split(',').map(e => e.trim()).filter(Boolean)
+  return []
+}
+
 // ═══════════════════════════════════════════════════════════════
 // Artistas View
 // ═══════════════════════════════════════════════════════════════
 const ArtistasView = ({ artistas, agendamentos, search, setSearch, filterEsp, setFilterEsp }) => {
   const especialidades = useMemo(() => {
     const set = new Set()
-    artistas.forEach(a => (a.especialidades || '').split(',').forEach(e => { if (e.trim()) set.add(e.trim()) }))
+    artistas.forEach(a => {
+      parseEspecialidades(a.especialidades).forEach(e => set.add(e))
+    })
     return ['all', ...Array.from(set)]
   }, [artistas])
 
   const filtered = useMemo(() => {
     return artistas.filter(a => {
       const matchSearch = !search || (a.nome || '').toLowerCase().includes(search.toLowerCase())
-      const matchEsp = filterEsp === 'all' || (a.especialidades || '').toLowerCase().includes(filterEsp.toLowerCase())
+      const espList = parseEspecialidades(a.especialidades)
+      const matchEsp = filterEsp === 'all' || espList.some(e => e.toLowerCase() === filterEsp.toLowerCase())
       return matchSearch && matchEsp
     })
   }, [artistas, search, filterEsp])
@@ -1088,7 +1098,7 @@ const ArtistasView = ({ artistas, agendamentos, search, setSearch, filterEsp, se
               }}>{a.ativo ? 'Ativo' : 'Inativo'}</span>
             </div>
             <h4 className="ap-artist-name">{a.nome || 'Sem nome'}</h4>
-            <p className="ap-artist-esp">{a.especialidades || 'Sem especialidade'}</p>
+            <p className="ap-artist-esp">{parseEspecialidades(a.especialidades).join(', ') || 'Sem especialidade'}</p>
             <div className="ap-artist-stats">
               <div><span className="ap-artist-stat-val">{getAgCount(a.id)}</span><span className="ap-artist-stat-lbl">Agendamentos</span></div>
               <div><span className="ap-artist-stat-val">{a.role || '—'}</span><span className="ap-artist-stat-lbl">Função</span></div>
